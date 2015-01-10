@@ -19,8 +19,6 @@ import logging
 import os
 
 from oslo.config import cfg
-
-from oslo_config import cfg
 from paste import deploy
 import pecan
 from werkzeug import serving
@@ -29,7 +27,7 @@ from ceilometer.api import config as api_config
 from ceilometer.api import hooks
 from ceilometer.api import middleware
 from ceilometer.openstack.common import log
-from ceilometer.openstack.commoncommoncommon.gettextutils import _
+from ceilometer.openstack.common.gettextutils import _
 from ceilometer import service
 from ceilometer import storage
 
@@ -85,7 +83,7 @@ def setup_app(pecan_config=None, extra_hooks=None):
     pecan_debug = CONF.api.pecan_debug
     if service.get_workers('api') != 1 and pecan_debug:
         pecan_debug = False
-        LOG.warning(_LW('pecan_debug cannot be enabled, if workers is > 1, '
+        LOG.warning(_('pecan_debug cannot be enabled, if workers is > 1, '
                         'the value is overrided with False'))
 
     app = pecan.make_app(
