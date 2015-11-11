@@ -168,12 +168,12 @@ class Connection(pymongo_base.Connection):
                                   'no_key': meter_id,
                                   'timestamp': timestamp})
 
-            self.db.resource.ensure_index([
+            self.db.resource.create_index([
                 ('user_id', pymongo.ASCENDING),
                 ('project_id', pymongo.ASCENDING),
                 ('source', pymongo.ASCENDING)], name='resource_idx')
 
-            self.db.meter.ensure_index([
+            self.db.meter.create_index([
                 ('resource_id', pymongo.ASCENDING),
                 ('user_id', pymongo.ASCENDING),
                 ('project_id', pymongo.ASCENDING),
@@ -181,7 +181,7 @@ class Connection(pymongo_base.Connection):
                 ('timestamp', pymongo.ASCENDING),
                 ('source', pymongo.ASCENDING)], name='meter_idx')
 
-            self.db.meter.ensure_index([('timestamp',
+            self.db.meter.create_index([('timestamp',
                                          pymongo.DESCENDING)],
                                        name='timestamp_idx')
 
@@ -200,7 +200,7 @@ class Connection(pymongo_base.Connection):
         # not been implemented. However calling this method is important for
         # removal of all the empty dbs created during the test runs since
         # test run is against mongodb on Jenkins
-        self.conn.drop_database(self.db)
+        self.conn.drop_database(self.db.name)
         self.conn.close()
 
     def record_metering_data(self, data):
