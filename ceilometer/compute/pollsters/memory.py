@@ -39,12 +39,20 @@ class MemoryUsagePollster(plugin.ComputePollster):
                     instance,
                     name='memory.usage',
                     type=sample.TYPE_GAUGE,
-                    unit='MB',
+                    unit='%',  # unit='MB',
                     volume=memory_info.usage,
                 )
             except virt_inspector.InstanceNotFoundException as err:
                 # Instance was deleted while getting samples. Ignore it.
                 LOG.debug(_('Exception while getting samples %s'), err)
+            except virt_inspector.InstanceShutOffException as e:
+                LOG.warn(_('Instance  was shut off while '
+                           'getting samples of %(pollster)s: %(exc)s'),
+                         {'pollster': self.__class__.__name__, 'exc': e})
+            except virt_inspector.NoDataException as e:
+                LOG.warn(_('Cannot inspect data of %(pollster)s for '
+                           'non-fatal reason: %(exc)s'),
+                         {'pollster': self.__class__.__name__, 'exc': e})
             except ceilometer.NotImplementedError:
                 # Selected inspector does not implement this pollster.
                 LOG.debug(_('Obtaining Memory Usage is not implemented for %s'
