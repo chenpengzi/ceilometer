@@ -42,6 +42,20 @@ class LBPoolsDiscovery(_BaseServicesDiscovery):
                 if i.get('status') != 'error']
 
 
+class LBHostedHaproxyPoolsDiscovery(_BaseServicesDiscovery):
+
+    def is_active_haproxy_pool(self, pool):
+        return pool['status'] == 'ACTIVE' and pool['provider'] == 'haproxy'
+
+    @plugin.check_keystone(cfg.CONF.service_types.neutron)
+    def discover(self, manager, param=None):
+        """Discover resources to monitor."""
+
+        pools = self.neutron_cli.pool_get_hosted()
+
+        return [i for i in pools if self.is_active_haproxy_pool(i)]
+
+
 class LBVipsDiscovery(_BaseServicesDiscovery):
     @plugin.check_keystone(cfg.CONF.service_types.neutron)
     def discover(self, manager, param=None):
