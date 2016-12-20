@@ -131,3 +131,8 @@ class Client(object):
     def fw_policy_get_all(self):
         resp = self.client.list_firewall_policies()
         return resp.get('firewall_policies')
+
+    @logged
+    def port_get_hosted(self):
+        resp = self.client.list_ports(host=cfg.CONF.host)
+        return resp.get('ports', [])

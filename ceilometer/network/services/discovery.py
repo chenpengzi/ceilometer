@@ -106,3 +106,19 @@ class FirewallPolicyDiscovery(_BaseServicesDiscovery):
         """Discover resources to monitor."""
 
         return self.neutron_cli.fw_policy_get_all()
+
+
+class ESMeteringPortDiscovery(_BaseServicesDiscovery):
+
+    def is_active_metering_port(self, port):
+        return (
+            port['status'] == 'ACTIVE' and
+            port['device_owner'].startswith('compute:'))
+
+    @plugin.check_keystone(cfg.CONF.service_types.neutron)
+    def discover(self, manager, param=None):
+        """Discover resources to monitor."""
+
+        ports = self.neutron_cli.port_get_hosted()
+
+        return [i for i in ports if self.is_active_metering_port(i)]
