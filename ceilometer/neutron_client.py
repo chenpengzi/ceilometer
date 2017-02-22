@@ -99,6 +99,20 @@ class Client(object):
         return resp.get('pools')
 
     @logged
+    def pool_get_hosted(self):
+        lb_agent_type = "Loadbalancer agent"
+        host = cfg.CONF.host
+        lb_agents = self.client.list_agents(
+            agent_type=lb_agent_type, host=host
+        ).get('agents')
+        if lb_agents:
+            agent_id = lb_agents[0]['id']
+            resp = self.client.list_pools_on_lbaas_agent(agent_id)
+            return resp.get('pools', [])
+        else:
+            return []
+
+    @logged
     def member_get_all(self):
         resp = self.client.list_members()
         return resp.get('members')
