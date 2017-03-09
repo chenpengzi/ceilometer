@@ -25,9 +25,18 @@ from ceilometer.openstack.common import processutils
 LOG = log.getLogger(__name__)
 
 IPT_CHAIN_NAME_LEN = 28
+NEUTRON_OPENVSWITCH_AGENT_BINARY_NAME = 'neutron-openvswitch-agent'
+WRAP_NAME = NEUTRON_OPENVSWITCH_AGENT_BINARY_NAME[:16]
 
 
 class _ESPortMeteringPollster(plugin.PollsterBase):
+
+    @staticmethod
+    def _get_chain_name(direction, port_id, overall=True):
+        chain_name = "%s-%s%s%s" % (
+            WRAP_NAME, 'C' if overall else 'c', direction, port_id
+        )
+        return chain_name[:IPT_CHAIN_NAME_LEN]
 
     @staticmethod
     def _get_ipt_chain_counters(chain):
@@ -59,11 +68,10 @@ class _ESPortMeteringPollster(plugin.PollsterBase):
 
     def _get_port_stat(self, port_id):
         port_stat = {}
-        for direction, key_prefix in (('ingress', 'in'), ('egress', 'out')):
-            overall_chain = '-'.join(
-                ['counting', direction, port_id])[:IPT_CHAIN_NAME_LEN]
-            internal_chain = '-'.join(
-                ['counting-in', direction, port_id])[:IPT_CHAIN_NAME_LEN]
+        for direction, key_prefix in (('i', 'in'), ('o', 'out')):
+            overall_chain = self._get_chain_name(direction, port_id)
+            internal_chain = self._get_chain_name(
+                direction, port_id, overall=False)
             overall_stats = self._get_ipt_chain_counters(overall_chain)
             internal_stats = self._get_ipt_chain_counters(internal_chain)
             for counter in ('packets', 'bytes'):
