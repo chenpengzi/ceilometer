@@ -126,8 +126,9 @@ class ESMeteringPortDiscovery(_BaseServicesDiscovery):
 
     def is_active_metering_port(self, port):
         return (
-            port['status'] == 'ACTIVE' and
-            port['device_owner'].startswith('compute:'))
+            port['status'] == 'ACTIVE' and (
+                port['device_owner'].startswith('compute:') or
+                port['device_owner'] == 'neutron:LOADBALANCER'))
 
     @plugin.check_keystone(cfg.CONF.service_types.neutron)
     def discover(self, manager, param=None):
