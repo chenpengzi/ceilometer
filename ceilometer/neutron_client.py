@@ -148,5 +148,5 @@ class Client(object):
 
     @logged
     def port_get_hosted(self):
-        resp = self.client.list_ports(host=cfg.CONF.host)
+        resp = self.client.list_ports(**{'binding:host_id': cfg.CONF.host})
         return resp.get('ports', [])
