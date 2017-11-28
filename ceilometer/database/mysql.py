@@ -73,11 +73,11 @@ class MysqlTPSRatePollster(DataBaseNotificationBase):
     sample_type = sample.TYPE_DELTA
 
 
-class MysqlSlowQuerysPollster(DataBaseNotificationBase):
+class MysqlSlowQueriesPollster(DataBaseNotificationBase):
     """Listen for Trove notifications.
        Listen in order to mediate with the metering framework.
     """
-    resource_name = 'mysql.slow.querys'
+    resource_name = 'mysql.slow.queries'
     unit = 'request'
     sample_type = sample.TYPE_CUMULATIVE
 
@@ -131,7 +131,7 @@ class MysqlQcacheQueryHitsRatioPollster(DataBaseNotificationBase):
     """Listen for Trove notifications.
        Listen in order to mediate with the metering framework.
     """
-    resource_name = 'mysql.qcahce.query.hits.ratio'
+    resource_name = 'mysql.qcache.query.hits.ratio'
     unit = '%'
     sample_type = sample.TYPE_DELTA
 
