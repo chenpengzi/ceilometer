@@ -207,7 +207,7 @@ class LibvirtInspector(virt_inspector.Inspector):
                                memory_stats.get('unused'))
                 # Stat provided from libvirt is in KB, converting it to MB.
                 # memory_used = memory_used / units.Ki
-                maxMemory = domain.maxMemory()
+                maxMemory = memory_stats.get('available')
                 memory_used = float(memory_used) / float(maxMemory) * 100.0
                 return virt_inspector.MemoryUsageStats(usage=memory_used)
             else:
